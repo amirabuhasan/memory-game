@@ -39,9 +39,13 @@ function ifNotMatch() {
   $(".open-cards").empty();
 }
 
+var rightAnswers = 0;
 function ifMatch() {
   $(".card.open").removeClass("show").addClass("match");
   $(".open-cards").empty();
+  rightAnswers++;
+  console.log( "I have been called " + rightAnswers + " times" );
+  return rightAnswers;
 }
 
 //counts number of clicks and displays it on page
@@ -52,12 +56,24 @@ function clickCounter(){
   console.log (counter);
 }
 
+//function gameWon(){
+
+
+function checkAnswer(item1,item2){
+  //checks to see if name of the two li elements match
+  if(item1 === item2){
+    return true;
+  }else{
+    return false;
+  };
+};
+
 function startGame(){
+
   $(".deck").on("click", "li", function(){
     $(toggleCards(this));
     $(checkMatch(this));
     $(clickCounter());
-
 
     var checkList = $(".open-cards").find("li");
 
@@ -65,20 +81,17 @@ function startGame(){
     var item1 = checkList.children().eq(0).attr("class");
     var item2 = checkList.children().eq(1).attr("class");
 
-    //checks to see if name of the two li elements match
     if (checkList.length === 2){
-      $(".li").click(false);
-      if(item1 === item2){
-        console.log("yes!");
+      if (checkAnswer(item1, item2) === true){
         $(ifMatch());
-
       }else{
-        console.log("no!");
-        setTimeout( function(){
+        setTimeout(function(){
           $(ifNotMatch());
         }  , 1000 );
-
       };
+    };
+    if (rightAnswers === 8){
+      console.log("Congratulations!");
     };
   });
 }
