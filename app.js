@@ -11,6 +11,16 @@
  */
 
 // Shuffle function from http://stackoverflow.com/a/2450976
+//an array to store sequence of cards
+
+
+var array = ["fa fa-diamond", "fa fa-paper-plane-o",
+"fa fa-anchor", "fa fa-bolt", "fa fa-cube",
+"fa fa-anchor", "fa fa-leaf", "fa fa-bicycle",
+"fa fa-diamond", "fa fa-bomb", "fa fa-leaf",
+"fa fa-bomb", "fa fa-bolt", "fa fa-bicycle",
+"fa fa-paper-plane-o", "fa fa-cube"];
+
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -23,6 +33,18 @@ function shuffle(array) {
     }
 
     return array;
+}
+
+//reassigns shuffled class names to .deck list.
+function shuffleCards(array){
+  var target = $(".deck").find("li");
+
+  target.each(function() {
+    var index = $(this).index();
+    if (index < array.length) {
+      $(this).children().addClass(array[index]);
+    }
+  });
 }
 
 //toggles between unopened and opened card when clicked
@@ -49,14 +71,11 @@ function ifMatch() {
 }
 
 //counts number of clicks and displays it on page
-function clickCounter(){
-  var counter = $("#moveBox").val();
+function clickCounter(counter,target){
   counter++ ;
-  $("#moveBox").val(counter);
+  $(target).val(counter);
   console.log (counter);
 }
-
-//function gameWon(){
 
 
 function checkAnswer(item1,item2){
@@ -68,12 +87,28 @@ function checkAnswer(item1,item2){
   };
 };
 
+//for pop up modal upon winning
+
+
+
+
 function startGame(){
+  var modal = $(".modal");
+  var modalOverlay = document.querySelector("#modal-overlay");
+  var closeButton = document.querySelector("#close-button");
+  var openButton = document.querySelector("#open-button");
+
+
+  array = $(shuffle(array));
+  $(shuffleCards(array));
 
   $(".deck").on("click", "li", function(){
     $(toggleCards(this));
     $(checkMatch(this));
-    $(clickCounter());
+
+    var counter = $("#moveBox").val();
+    var target = "#moveBox";
+    $(clickCounter(counter, target));
 
     var checkList = $(".open-cards").find("li");
 
@@ -90,7 +125,10 @@ function startGame(){
         }  , 1000 );
       };
     };
-    if (rightAnswers === 8){
+    if (rightAnswers === 1){
+      $(".modal").removeClass("closed");
+      $(".modal-score").append("You did it in " + counter + " moves");
+      //$("With " + counter).appendTo($(".modal-score"));
       console.log("Congratulations!");
     };
   });
