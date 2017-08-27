@@ -87,12 +87,25 @@ function checkAnswer(item1,item2){
   };
 };
 
+//caluclate star rating
+function checkScore(counter){
+  if (counter > 8){
+    $(".fa-star#3").css("color", "black");
+  }
+  if (counter > 18){
+    $(".fa-star#2").css("color", "black");
+  }
+  if (counter > 28){
+    $(".fa-star#1").css("color", "black");
+  }
+}
+
 //for pop up modal upon winning
 
 
 
-
-function startGame(){
+//function to start game
+function playGame(){
   var modal = $(".modal");
   var modalOverlay = document.querySelector("#modal-overlay");
   var closeButton = document.querySelector("#close-button");
@@ -109,6 +122,7 @@ function startGame(){
     var counter = $("#moveBox").val();
     var target = "#moveBox";
     $(clickCounter(counter, target));
+    $(checkScore(counter));
 
     var checkList = $(".open-cards").find("li");
 
@@ -116,6 +130,7 @@ function startGame(){
     var item1 = checkList.children().eq(0).attr("class");
     var item2 = checkList.children().eq(1).attr("class");
 
+    //checks if cards match. If they do, executes ifMatch(). Else, executes ifNotMatch()
     if (checkList.length === 2){
       if (checkAnswer(item1, item2) === true){
         $(ifMatch());
@@ -125,16 +140,28 @@ function startGame(){
         }  , 1000 );
       };
     };
+
+    //checks to see if user has matched all the cards. If they have, launches congratulations modal and appends user's star rating and number of moves to it
     if (rightAnswers === 1){
-      $(".modal").removeClass("closed");
-      $(".modal-score").append("You did it in " + counter + " moves");
+      $(".modal").addClass("is-active");
+      $("ul.stars").clone().appendTo( $( ".modal span" ))
+      $(".modal p").append("You did it in " + counter + " moves");
       //$("With " + counter).appendTo($(".modal-score"));
       console.log("Congratulations!");
     };
   });
+  //restarts page
+  $(".restart").on("click", ".fa-repeat", function(){
+    location.reload();
+  });
+
+  $(".js-close").on("click", function(){
+    location.reload();
+  });
+
 }
 
-$(startGame())
+$(playGame())
 
 
 
