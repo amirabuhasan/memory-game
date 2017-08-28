@@ -59,6 +59,12 @@ function checkMatch(element) {
 function ifNotMatch() {
   $(".card.open").toggleClass("open show");
   $(".open-cards").empty();
+  $(".card").removeClass("wrong");
+}
+
+function ifNotMatchAnimation(){
+  $(".card.open.show").addClass("wrong");
+  $(".card.open.show").addClass("animated " + "shake");
 }
 
 var rightAnswers = 0;
@@ -68,6 +74,15 @@ function ifMatch() {
   rightAnswers++;
   console.log( "I have been called " + rightAnswers + " times" );
   return rightAnswers;
+}
+
+function ifMatchAnimation(){
+  $(".card.open").addClass("animated " + "rubberBand");
+}
+
+function gameEndAnimation(){
+  $(".deck").addClass("animated " + "bounce");
+  $(".deck").addClass("animated " + "rubberBand");
 }
 
 //counts number of clicks and displays it on page
@@ -89,15 +104,13 @@ function checkAnswer(item1,item2){
 
 //calculate star rating
 function checkScore(counter){
-  if (counter > 8){
+  if (counter > 18){
     $(".fa-star#3").css("color", "black");
   }
-  if (counter > 18){
+  if (counter > 28){
     $(".fa-star#2").css("color", "black");
   }
-  if (counter > 28){
-    $(".fa-star#1").css("color", "black");
-  }
+
 }
 
 //for pop up modal upon winning
@@ -141,16 +154,22 @@ function incrementTimer() {
 	minutes.innerText = numOfMinutes >= 10 ? numOfMinutes : "0" + numOfMinutes;
 }
 
+//disable click
+
+
+
 
 
 //function to start game
 function playGame(){
+
   var modal = $(".modal");
 
   array = $(shuffle(array));
   $(shuffleCards(array));
 
   $(".deck").on("click", "li", function(){
+
     $(toggleCards(this));
     $(checkMatch(this));
     $(startTimer());
@@ -169,9 +188,14 @@ function playGame(){
     //checks if cards match. If they do, executes ifMatch(). Else, executes ifNotMatch()
     if (checkList.length === 2){
       if (checkAnswer(item1, item2) === true){
+        $(ifMatchAnimation());
         $(ifMatch());
       }else{
+        $(ifNotMatchAnimation());
+        $(".deck").css({ "pointer-events": "none" });
         setTimeout(function(){
+          $(".card.open.show").removeClass("animated " + "shake");
+          $(".deck").css({ "pointer-events": "auto" });
           $(ifNotMatch());
         }  , 1000 );
       };
@@ -184,6 +208,9 @@ function playGame(){
       $(".modal p").append("You did it in " + counter + " moves. Your time : ");
       $(stopTimer());
       $("span.timer").clone().appendTo( $( ".modal p" ))
+      $(".deck").css({ "pointer-events": "none" });
+      $(gameEndAnimation());
+
 
       //$("With " + counter).appendTo($(".modal-score"));
       console.log("Congratulations!");
