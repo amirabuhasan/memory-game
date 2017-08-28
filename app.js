@@ -77,9 +77,9 @@ function clickCounter(counter,target){
   console.log (counter);
 }
 
-
+//checks to see if name of the two li elements match
 function checkAnswer(item1,item2){
-  //checks to see if name of the two li elements match
+
   if(item1 === item2){
     return true;
   }else{
@@ -87,7 +87,7 @@ function checkAnswer(item1,item2){
   };
 };
 
-//caluclate star rating
+//calculate star rating
 function checkScore(counter){
   if (counter > 8){
     $(".fa-star#3").css("color", "black");
@@ -103,14 +103,49 @@ function checkScore(counter){
 //for pop up modal upon winning
 
 
+//timer function by Alejandro Mesa from https://codepen.io/alemesa/pen/xgNjWL?page=10
+const startButton = document.querySelector('[data-action="start"]');
+const stopButton = document.querySelector('[data-action="stop"]');
+const resetButton = document.querySelector('[data-action="reset"]');
+const minutes = document.querySelector('.minutes');
+const seconds = document.querySelector('.seconds');
+let timerTime = 0;
+let interval;
+let isRunning = false;
+
+function startTimer() {
+
+	if (!isRunning) {
+		isRunning = true;
+		interval = setInterval(incrementTimer, 1000);
+	}
+}
+
+function stopTimer() {
+	isRunning = false;
+	clearInterval(interval);
+}
+
+function resetTimer() {
+	stopTimer();
+	timerTime = 0;
+	seconds.innerText = '00'
+	minutes.innerText = '00'
+}
+
+function incrementTimer() {
+	timerTime = timerTime + 1;
+	const numOfMinutes = Math.floor(timerTime / 60);
+	const numOfSeconds = timerTime % 60;
+	seconds.innerText = numOfSeconds >= 10 ? numOfSeconds : "0" + numOfSeconds;
+	minutes.innerText = numOfMinutes >= 10 ? numOfMinutes : "0" + numOfMinutes;
+}
+
+
 
 //function to start game
 function playGame(){
   var modal = $(".modal");
-  var modalOverlay = document.querySelector("#modal-overlay");
-  var closeButton = document.querySelector("#close-button");
-  var openButton = document.querySelector("#open-button");
-
 
   array = $(shuffle(array));
   $(shuffleCards(array));
@@ -118,6 +153,7 @@ function playGame(){
   $(".deck").on("click", "li", function(){
     $(toggleCards(this));
     $(checkMatch(this));
+    $(startTimer());
 
     var counter = $("#moveBox").val();
     var target = "#moveBox";
@@ -142,10 +178,13 @@ function playGame(){
     };
 
     //checks to see if user has matched all the cards. If they have, launches congratulations modal and appends user's star rating and number of moves to it
-    if (rightAnswers === 1){
+    if (rightAnswers === 8){
       $(".modal").addClass("is-active");
-      $("ul.stars").clone().appendTo( $( ".modal span" ))
-      $(".modal p").append("You did it in " + counter + " moves");
+      $("ul.stars").clone().appendTo( $( ".modal span#rating" ))
+      $(".modal p").append("You did it in " + counter + " moves. Your time : ");
+      $(stopTimer());
+      $("span.timer").clone().appendTo( $( ".modal p" ))
+
       //$("With " + counter).appendTo($(".modal-score"));
       console.log("Congratulations!");
     };

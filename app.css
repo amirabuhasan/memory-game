@@ -153,7 +153,7 @@ input {
  }
 
  .modal p {
-   margin-bottom: 1em;
+
    color: #666;
  }
 
@@ -163,6 +163,7 @@ input {
    list-style: none;
    display: inline-block;
    margin-bottom: 1em;
+   margin-top: 1em;
  }
 
  .modal h1 {
